@@ -1,0 +1,37 @@
+#include<stdio.h>
+#include<windows.h>
+#include<time.h>
+#include<mmsystem.h>
+#define CHAR_PER_FRAME 9662
+//9662是每一帧的字符数，可自由修改
+//该代码只是我自己写的逻辑，无法直接运行，需要大佬们自己准备每一帧的ASCII字符画哦~
+FILE *fp;
+int x,y;
+void GoToXY(int x,int y)
+{
+	COORD pos = {x, y};
+	HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+	SetConsoleCursorPosition(hOut, pos);			//设置光标位置
+}
+
+int main()
+{	
+	WinExec("mpg123.exe -q bad_apple.mp3",SW_HIDE);		
+	fp = fopen("bad_apple.txt","r");
+	if((fp = fopen("bad_apple.txt","r")) == NULL)
+	{
+		return 1;
+	}                                       //安全措施要做好
+	Sleep(665);
+	while(!feof(fp))
+	{
+	char file_buffer[CHAR_PER_FRAME + 100] = {0};		
+	fread(file_buffer,CHAR_PER_FRAME, 1 , fp);			
+	fwrite(file_buffer, CHAR_PER_FRAME, 1 ,stdout);	//此处可以做些优化，例如做双缓冲区等，改善闪屏问题 
+	GoToXY(0,0);
+	Sleep(25);											//暴力40帧
+	//
+	}
+	fclose(fp);
+	return 0;	 
+}
